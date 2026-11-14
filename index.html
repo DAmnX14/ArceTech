@@ -18,6 +18,18 @@ a,button,input,select,textarea{transition:opacity .15s, box-shadow .15s}
 input:focus,select:focus,textarea:focus{outline:2px solid #1B5E3B;outline-offset:1px}
 article{transition:transform .2s, box-shadow .2s}
 article:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(16,38,26,.08)}
+.site-header{transition:transform .25s ease}
+.site-header.oculto{transform:translateY(-100%)}
+.mobile-cta{display:none}
+@media (max-width:720px){
+ .header-inner{padding:10px 16px !important;gap:8px 12px !important}
+ .logo{height:40px !important}
+ .nav-cta{display:none !important}
+ .mobile-cta{display:inline-flex;align-items:center;min-height:40px;padding:8px 14px;border-radius:8px;background:#1B5E3B;color:#FFFFFF !important;text-decoration:none;font-size:14px;font-weight:600}
+ .main-nav{width:100%;flex-wrap:nowrap !important;overflow-x:auto;gap:20px !important;font-size:14px !important;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+ .main-nav::-webkit-scrollbar{display:none}
+ .main-nav a{white-space:nowrap;padding:6px 0}
+}
 @media (max-width:720px){
  .hero-title{font-size:38px !important}
  h2{font-size:30px !important}
@@ -32,17 +44,18 @@ article:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(16,38,26,.0
 <body>
 <div style="font-family: Inter, system-ui, sans-serif; color: #17221C; background: #FFFFFF; min-height: 100vh">
 
-<header style="border-bottom: 1px solid #E3EAE5; background: #FFFFFF; position: sticky; top: 0; z-index: 10">
-<div style="max-width: 1200px; margin: 0 auto; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap">
+<header class="site-header" style="border-bottom: 1px solid #E3EAE5; background: #FFFFFF; position: sticky; top: 0; z-index: 10">
+<div class="header-inner" style="max-width: 1200px; margin: 0 auto; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap">
 <a href="#inicio" style="display: flex; align-items: center; text-decoration: none">
-<img src="img/logo.jpg" alt="Arce Tech" style="height: 56px; width: auto; display: block">
+<img class="logo" src="img/logo.jpg" alt="Arce Tech" style="height: 56px; width: auto; display: block">
 </a>
-<nav aria-label="Principal" style="display: flex; align-items: center; gap: 28px; flex-wrap: wrap; font-size: 15px; font-weight: 500">
+<a href="#contacto" class="mobile-cta">Presupuesto</a>
+<nav class="main-nav" aria-label="Principal" style="display: flex; align-items: center; gap: 28px; flex-wrap: wrap; font-size: 15px; font-weight: 500">
 <a href="#servicios" style="text-decoration: none; color: #2E3B33">Servicios</a>
 <a href="#proyectos" style="text-decoration: none; color: #2E3B33">Proyectos</a>
 <a href="#proceso" style="text-decoration: none; color: #2E3B33">Cómo trabajamos</a>
 <a href="#nosotros" style="text-decoration: none; color: #2E3B33">Nosotros</a>
-<a href="#contacto" style="text-decoration: none; background: #1B5E3B; color: #FFFFFF; padding: 12px 20px; border-radius: 8px; min-height: 44px; box-sizing: border-box; display: inline-flex; align-items: center">Pedí tu presupuesto</a>
+<a href="#contacto" class="nav-cta" style="text-decoration: none; background: #1B5E3B; color: #FFFFFF; padding: 12px 20px; border-radius: 8px; min-height: 44px; box-sizing: border-box; display: inline-flex; align-items: center">Pedí tu presupuesto</a>
 </nav>
 </div>
 </header>
@@ -305,6 +318,16 @@ document.getElementById('form-contacto').addEventListener('submit',function(e){
  var n=document.getElementById('nombre').value.trim();
  document.getElementById('form-msg').textContent='Gracias'+(n?', '+n:'')+'. El envío de consultas se habilita pronto; mientras tanto podés contactarnos por los datos de la izquierda.';
 });
+</script>
+<script>
+(function(){
+ var h=document.querySelector('.site-header'),y0=window.scrollY;
+ window.addEventListener('scroll',function(){
+  var y=window.scrollY;
+  if(y>y0&&y>120){h.classList.add('oculto')}else if(y<y0-4||y<=120){h.classList.remove('oculto')}
+  y0=y;
+ },{passive:true});
+})();
 </script>
 </body>
 </html>
