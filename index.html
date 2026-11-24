@@ -343,6 +343,7 @@ article:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(16,38,26,.0
 <label for="mensaje" style="font-size: 14px; font-weight: 600; color: #2E3B33">Mensaje</label>
 <textarea id="mensaje" rows="4" placeholder="Contanos brevemente tu proyecto" style="font: inherit; font-size: 16px; padding: 12px 14px; border: 1px solid #C3D1C8; border-radius: 8px; resize: vertical"></textarea>
 </div>
+<input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position: absolute; left: -9999px; width: 1px; height: 1px">
 <button type="submit" style="font: inherit; font-size: 16px; font-weight: 600; background: #1B5E3B; color: #FFFFFF; border: none; border-radius: 8px; padding: 16px; min-height: 48px; cursor: pointer">Enviar consulta</button>
 <p id="form-msg" role="status" style="margin: 0; font-size: 15px; line-height: 1.5; color: #1B5E3B"></p>
 </form>
@@ -360,13 +361,33 @@ article:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(16,38,26,.0
 </div>
 
 <script>
-document.getElementById('form-contacto').addEventListener('submit',function(e){
- e.preventDefault();
+(function(){
+ var f=document.getElementById('form-contacto'),msg=document.getElementById('form-msg'),btn=f.querySelector('button[type="submit"]');
  var v=function(id){return document.getElementById(id).value.trim()};
- var txt='Hola Arce Tech! Soy '+v('nombre')+' ('+v('email')+').\nNecesito: '+v('servicio')+(v('mensaje')?'\n\n'+v('mensaje'):'');
- window.open('https://wa.me/5493886525530?text='+encodeURIComponent(txt),'_blank','noopener');
- document.getElementById('form-msg').textContent='Te abrimos WhatsApp con tu consulta lista para enviar. Si no se abre, escribinos a arcetechdevs@gmail.com.';
-});
+ f.addEventListener('submit',function(e){
+  e.preventDefault();
+  if(f.querySelector('[name="_honey"]').value)return;
+  btn.disabled=true;btn.style.opacity='.6';btn.textContent='Enviando…';
+  msg.style.color='#1B5E3B';msg.textContent='';
+  fetch('https://formsubmit.co/ajax/arcetechdevs@gmail.com',{
+   method:'POST',
+   headers:{'Content-Type':'application/json','Accept':'application/json'},
+   body:JSON.stringify({
+    _subject:'Nueva consulta web: '+v('servicio')+' — '+v('nombre'),
+    _template:'table',
+    _replyto:v('email'),
+    Nombre:v('nombre'),Email:v('email'),Servicio:v('servicio'),Mensaje:v('mensaje')||'(sin mensaje)'
+   })
+  }).then(function(r){return r.json().then(function(d){if(!r.ok||String(d.success)!=='true')throw new Error(d.message||'Error');})})
+  .then(function(){
+   f.reset();
+   msg.textContent='¡Gracias! Recibimos tu consulta y te respondemos a la brevedad.';
+  }).catch(function(){
+   msg.style.color='#A33A2B';
+   msg.innerHTML='No pudimos enviar la consulta. Escribinos a <a href="mailto:arcetechdevs@gmail.com">arcetechdevs@gmail.com</a> o por <a href="https://wa.me/5493886525530" target="_blank" rel="noopener">WhatsApp</a>.';
+  }).then(function(){btn.disabled=false;btn.style.opacity='';btn.textContent='Enviar consulta'});
+ });
+})();
 </script>
 <script>
 (function(){
