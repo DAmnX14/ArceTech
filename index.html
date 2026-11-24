@@ -320,7 +320,7 @@ article:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(16,38,26,.0
 <span style="display: inline-flex; align-items: center; gap: 10px"><span aria-hidden="true" style="width: 36px; height: 36px; border-radius: 50%; background: #DCE7E0; color: #1B5E3B; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg></span>Libertador General San Martín, Jujuy</span>
 </div>
 </div>
-<form id="form-contacto" style="background: #FFFFFF; border: 1px solid #DCE5DF; border-radius: 16px; padding: 32px; display: flex; flex-direction: column; gap: 18px">
+<form id="form-contacto" action="https://formsubmit.co/arcetechdevs@gmail.com" method="POST" style="background: #FFFFFF; border: 1px solid #DCE5DF; border-radius: 16px; padding: 32px; display: flex; flex-direction: column; gap: 18px">
 <div style="display: flex; flex-direction: column; gap: 6px">
 <label for="nombre" style="font-size: 14px; font-weight: 600; color: #2E3B33">Nombre</label>
 <input id="nombre" name="nombre" required type="text" placeholder="Tu nombre" style="font: inherit; font-size: 16px; padding: 12px 14px; border: 1px solid #C3D1C8; border-radius: 8px; min-height: 44px; box-sizing: border-box">
@@ -331,7 +331,7 @@ article:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(16,38,26,.0
 </div>
 <div style="display: flex; flex-direction: column; gap: 6px">
 <label for="servicio" style="font-size: 14px; font-weight: 600; color: #2E3B33">¿Qué necesitás?</label>
-<select id="servicio" style="font: inherit; font-size: 16px; padding: 12px 14px; border: 1px solid #C3D1C8; border-radius: 8px; min-height: 44px; background: #FFFFFF">
+<select id="servicio" name="servicio" style="font: inherit; font-size: 16px; padding: 12px 14px; border: 1px solid #C3D1C8; border-radius: 8px; min-height: 44px; background: #FFFFFF">
 <option>Desarrollo de software</option>
 <option>Inteligencia Artificial</option>
 <option>Soporte técnico</option>
@@ -339,8 +339,12 @@ article:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(16,38,26,.0
 </div>
 <div style="display: flex; flex-direction: column; gap: 6px">
 <label for="mensaje" style="font-size: 14px; font-weight: 600; color: #2E3B33">Mensaje</label>
-<textarea id="mensaje" rows="4" placeholder="Contanos brevemente tu proyecto" style="font: inherit; font-size: 16px; padding: 12px 14px; border: 1px solid #C3D1C8; border-radius: 8px; resize: vertical"></textarea>
+<textarea id="mensaje" name="mensaje" rows="4" placeholder="Contanos brevemente tu proyecto" style="font: inherit; font-size: 16px; padding: 12px 14px; border: 1px solid #C3D1C8; border-radius: 8px; resize: vertical"></textarea>
 </div>
+<input type="hidden" name="_subject" value="Nueva consulta desde la página web">
+<input type="hidden" name="_template" value="table">
+<input type="hidden" name="_captcha" value="false">
+<input type="hidden" name="_next" value="https://damnx14.github.io/ArceTech/?enviado=1#contacto">
 <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position: absolute; left: -9999px; width: 1px; height: 1px">
 <button type="submit" style="font: inherit; font-size: 16px; font-weight: 600; background: #1B5E3B; color: #FFFFFF; border: none; border-radius: 8px; padding: 16px; min-height: 48px; cursor: pointer">Enviar consulta</button>
 <p id="form-msg" role="status" style="margin: 0; font-size: 15px; line-height: 1.5; color: #1B5E3B"></p>
@@ -361,30 +365,16 @@ article:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(16,38,26,.0
 <script>
 (function(){
  var f=document.getElementById('form-contacto'),msg=document.getElementById('form-msg'),btn=f.querySelector('button[type="submit"]');
- var v=function(id){return document.getElementById(id).value.trim()};
- f.addEventListener('submit',function(e){
-  e.preventDefault();
-  if(f.querySelector('[name="_honey"]').value)return;
-  btn.disabled=true;btn.style.opacity='.6';btn.textContent='Enviando…';
-  msg.style.color='#1B5E3B';msg.textContent='';
-  fetch('https://formsubmit.co/ajax/arcetechdevs@gmail.com',{
-   method:'POST',
-   headers:{'Content-Type':'application/json','Accept':'application/json'},
-   body:JSON.stringify({
-    _subject:'Nueva consulta web: '+v('servicio')+' — '+v('nombre'),
-    _template:'table',
-    _replyto:v('email'),
-    Nombre:v('nombre'),Email:v('email'),Servicio:v('servicio'),Mensaje:v('mensaje')||'(sin mensaje)'
-   })
-  }).then(function(r){return r.json().then(function(d){if(!r.ok||String(d.success)!=='true')throw new Error(d.message||'Error');})})
-  .then(function(){
-   f.reset();
-   msg.textContent='¡Gracias! Recibimos tu consulta y te respondemos a la brevedad.';
-  }).catch(function(){
-   msg.style.color='#A33A2B';
-   msg.innerHTML='No pudimos enviar la consulta. Escribinos a <a href="mailto:arcetechdevs@gmail.com">arcetechdevs@gmail.com</a>.';
-  }).then(function(){btn.disabled=false;btn.style.opacity='';btn.textContent='Enviar consulta'});
+ f.addEventListener('submit',function(){
+  var sv=document.getElementById('servicio').value,n=document.getElementById('nombre').value.trim();
+  f.querySelector('[name="_subject"]').value='Nueva consulta web: '+sv+(n?' — '+n:'');
+  btn.style.opacity='.6';btn.textContent='Enviando…';
  });
+ if(/[?&]enviado=1/.test(location.search)){
+  msg.textContent='¡Gracias! Recibimos tu consulta y te respondemos a la brevedad.';
+  history.replaceState(null,'',location.pathname+'#contacto');
+ }
+ window.addEventListener('pageshow',function(){btn.style.opacity='';btn.textContent='Enviar consulta'});
 })();
 </script>
 <script>
